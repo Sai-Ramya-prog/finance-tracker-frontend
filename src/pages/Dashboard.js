@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import "../styles/style.css";
 import { Link } from "react-router-dom";
@@ -19,16 +19,10 @@ import {
 const Dashboard = () => {
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
   const [transactions, setTransactions] = useState([]);
-
   const token = localStorage.getItem("token");
-console.log("Token used for summary request:", token);
 
-  useEffect(() => {
-    fetchSummary();
-    fetchTransactions();
-  }, []);
-
-  const fetchSummary = async () => {
+  // Fetch Summary
+  const fetchSummary = useCallback(async () => {
     try {
       const res = await axios.get("https://finance-tracker-backend-cvcl.onrender.com/api/summary", {
         headers: { Authorization: `Bearer ${token}` },
@@ -37,9 +31,10 @@ console.log("Token used for summary request:", token);
     } catch (err) {
       alert("Error fetching summary");
     }
-  };
+  }, [token]);
 
-  const fetchTransactions = async () => {
+  // Fetch Transactions
+  const fetchTransactions = useCallback(async () => {
     try {
       const res = await axios.get("https://finance-tracker-backend-cvcl.onrender.com/api/transactions", {
         headers: { Authorization: `Bearer ${token}` },
@@ -48,7 +43,12 @@ console.log("Token used for summary request:", token);
     } catch (err) {
       alert("Error fetching transactions");
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    fetchSummary();
+    fetchTransactions();
+  }, [fetchSummary, fetchTransactions]);
 
   const handleDelete = async (id) => {
     try {
@@ -63,24 +63,20 @@ console.log("Token used for summary request:", token);
     }
   };
 
-  // Pie chart data
   const pieData = [
     { name: "Income", value: summary.totalIncome },
     { name: "Expense", value: summary.totalExpense },
   ];
   const COLORS = ["#00C49F", "#FF8042"];
 
-  // Monthly expense data from transactions
   const monthlyExpenseData = useMemo(() => {
     const grouped = {};
-
     transactions.forEach((tx) => {
       if (tx.type === "expense") {
         const month = new Date(tx.date).toLocaleString("default", { month: "short" });
         grouped[month] = (grouped[month] || 0) + tx.amount;
       }
     });
-
     return Object.keys(grouped).map((month) => ({
       month,
       expense: grouped[month],

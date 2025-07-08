@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/style.css"; // Use your styles or add new
+import { Link } from "react-router-dom";
 
 const Contact = () => {
   return (
@@ -23,7 +24,15 @@ const Contact = () => {
         <div>
           <h4>Follow us</h4>
           <p>
-            <a href="#">Instagram</a> | <a href="#">YouTube</a> | <a href="#">TikTok</a>
+            import { Link } from "react-router-dom";
+
+...
+
+<p>
+  <Link to="/contact">Instagram</Link> |{" "}
+  <Link to="/contact">YouTube</Link> |{" "}
+  <Link to="/contact">TikTok</Link>
+</p>
           </p>
         </div>
       </div>
