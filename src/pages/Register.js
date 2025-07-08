@@ -20,8 +20,8 @@ const Register = () => {
 
     // Save token & redirect
     localStorage.setItem("token", res.data.token);
-    alert("Registration successful!");
-    window.location.href = "/"; // or navigate("/login");
+    alert("Registration successful! Registration successful. Please log in");
+    window.location.href = "/login"; // or navigate("/login");
   } catch (err) {
     alert(err.response?.data?.msg || "Registration failed. Try again later.");
   }
