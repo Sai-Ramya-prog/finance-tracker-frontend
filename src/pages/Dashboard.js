@@ -45,10 +45,15 @@ const Dashboard = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    fetchSummary();
-    fetchTransactions();
-  }, [fetchSummary, fetchTransactions]);
+useEffect(() => {
+  if (!token) {
+    alert("Please log in first");
+    window.location.href = "/login";
+    return;
+  }
+  fetchSummary();
+  fetchTransactions();
+}, [token, fetchSummary, fetchTransactions]); // ✅ Add token to dependency array
 
   const handleDelete = async (id) => {
     try {
